@@ -1,8 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { EmissionRecord, CompanyProfile, Recommendation } from "@/types";
-import { generateId } from "@/utils/helpers";
 import { User } from "firebase/auth";
+import {
+  addEmissionRecord,
+  updateEmissionRecord,
+  deleteEmissionRecord,
+  getUserEmissionRecords,
+} from "@/services/firestoreService";
 
 interface AppStore {
   // Authentication
@@ -19,10 +24,10 @@ interface AppStore {
 
   // Emission Records
   records: EmissionRecord[];
-  addRecord: (record: Omit<EmissionRecord, "id" | "timestamp">) => void;
-  updateRecord: (id: string, record: Partial<EmissionRecord>) => void;
-  deleteRecord: (id: string) => void;
-  addMultipleRecords: (records: Array<Omit<EmissionRecord, "id" | "timestamp">>) => void;
+  loadRecords: () => Promise<void>;
+  addRecord: (record: Omit<EmissionRecord, "id" | "timestamp">) => Promise<void>;
+  updateRecord: (id: string, record: Partial<EmissionRecord>) => Promise<void>;
+  deleteRecord: (id: string) => Promise<void>;
 
   // Recommendations
   recommendations: Recommendation[];
@@ -43,7 +48,7 @@ interface AppStore {
 
 export const useAppStore = create<AppStore>()(
   persist(
-    (set: (arg: Partial<AppStore> | ((state: AppStore) => Partial<AppStore>)) => void) => ({
+    (set: (arg: Partial<AppStore> | ((state: AppStore) => Partial<AppStore>)) => void, get: () => AppStore) => ({
       // Authentication
       user: null,
       setUser: (user: User | null) => set({ user }),
@@ -58,36 +63,112 @@ export const useAppStore = create<AppStore>()(
 
       // Emission Records
       records: [],
-      addRecord: (record: Omit<EmissionRecord, "id" | "timestamp">) =>
-        set((state: AppStore) => ({
-          records: [
-            ...state.records,
-            {
-              ...record,
-              id: generateId("record_"),
-              timestamp: new Date().toISOString(),
-            },
-          ],
-        })),
-      updateRecord: (id: string, updatedRecord: Partial<EmissionRecord>) =>
-        set((state: any) => ({
-          records: state.records.map((r: EmissionRecord) => (r.id === id ? { ...r, ...updatedRecord } : r)),
-        })),
-      deleteRecord: (id: string) =>
-        set((state: any) => ({
-          records: state.records.filter((r: EmissionRecord) => r.id !== id),
-        })),
-      addMultipleRecords: (newRecords: EmissionRecord[]) =>
-        set((state: any) => ({
-          records: [
-            ...state.records,
-            ...newRecords.map((r: EmissionRecord) => ({
-              ...r,
-              id: generateId("record_"),
-              timestamp: new Date().toISOString(),
-            })),
-          ],
-        })),
+      
+      // Load records from Firestore
+      loadRecords: async () => {
+        const { user } = get();
+        if (!user) {
+          set({ error: "User not authenticated" });
+          return;
+        }
+
+        set({ isLoading: true, error: null });
+        try {
+          const records = await getUserEmissionRecords(user.uid);
+          set({ records, isLoading: false, lastSyncTime: new Date().toISOString() });
+        } catch (error: any) {
+          console.error("Error loading records:", error);
+          set({ 
+            error: error.message || "Failed to load records",
+            isLoading: false 
+          });
+        }
+      },
+
+      // Add record to Firestore
+      addRecord: async (record: Omit<EmissionRecord, "id" | "timestamp">) => {
+        const { user } = get();
+        if (!user) {
+          set({ error: "User not authenticated" });
+          return;
+        }
+
+        set({ isLoading: true, error: null });
+        try {
+          const recordId = await addEmissionRecord(user.uid, record);
+          const newRecord = { 
+            ...record, 
+            id: recordId, 
+            timestamp: new Date().toISOString() 
+          };
+          set((state: AppStore) => ({
+            records: [newRecord, ...state.records],
+            isLoading: false,
+            success: "Record added successfully",
+            lastSyncTime: new Date().toISOString(),
+          }));
+        } catch (error: any) {
+          console.error("Error adding record:", error);
+          set({ 
+            error: error.message || "Failed to add record",
+            isLoading: false 
+          });
+        }
+      },
+
+      // Update record in Firestore
+      updateRecord: async (id: string, updatedRecord: Partial<EmissionRecord>) => {
+        const { user } = get();
+        if (!user) {
+          set({ error: "User not authenticated" });
+          return;
+        }
+
+        set({ isLoading: true, error: null });
+        try {
+          await updateEmissionRecord(user.uid, id, updatedRecord);
+          set((state: any) => ({
+            records: state.records.map((r: EmissionRecord) => 
+              r.id === id ? { ...r, ...updatedRecord } : r
+            ),
+            isLoading: false,
+            success: "Record updated successfully",
+            lastSyncTime: new Date().toISOString(),
+          }));
+        } catch (error: any) {
+          console.error("Error updating record:", error);
+          set({ 
+            error: error.message || "Failed to update record",
+            isLoading: false 
+          });
+        }
+      },
+
+      // Delete record from Firestore
+      deleteRecord: async (id: string) => {
+        const { user } = get();
+        if (!user) {
+          set({ error: "User not authenticated" });
+          return;
+        }
+
+        set({ isLoading: true, error: null });
+        try {
+          await deleteEmissionRecord(user.uid, id);
+          set((state: any) => ({
+            records: state.records.filter((r: EmissionRecord) => r.id !== id),
+            isLoading: false,
+            success: "Record deleted successfully",
+            lastSyncTime: new Date().toISOString(),
+          }));
+        } catch (error: any) {
+          console.error("Error deleting record:", error);
+          set({ 
+            error: error.message || "Failed to delete record",
+            isLoading: false 
+          });
+        }
+      },
 
       // Recommendations
       recommendations: [],
@@ -110,8 +191,7 @@ export const useAppStore = create<AppStore>()(
       partialize: (state: any) => ({
         theme: state.theme,
         company: state.company,
-        records: state.records,
-        // Don't persist user - will be managed by Firebase
+        // Don't persist records or user - will be loaded from Firebase
       }),
     }
   )

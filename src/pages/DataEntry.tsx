@@ -58,7 +58,7 @@ export const DataEntry: React.FC = () => {
       }
       if (result.success && result.data) {
         if (editId) {
-          updateRecord(editId, {
+          await updateRecord(editId, {
             month: month.toString(),
             year,
             category: activeTab,
@@ -69,7 +69,7 @@ export const DataEntry: React.FC = () => {
           });
           setSuccess(`Record updated! CO₂e: ${formatNumber(result.data.co2e)} kg`);
         } else {
-          addRecord({
+          await addRecord({
             month: month.toString(),
             year,
             category: activeTab,

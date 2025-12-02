@@ -17,16 +17,20 @@ import Login from "@/pages/Login";
 import "@/styles/globals.css";
 
 export const App: React.FC = () => {
-  const { theme, setUser } = useAppStore();
+  const { theme, setUser, loadRecords } = useAppStore();
 
   // Subscribe to authentication state changes
   React.useEffect(() => {
     const unsubscribe = subscribeToAuthChanges((user) => {
       setUser(user);
+      // Load records when user logs in
+      if (user) {
+        loadRecords();
+      }
     });
 
     return () => unsubscribe();
-  }, [setUser]);
+  }, [setUser, loadRecords]);
 
   // Handle theme changes
   React.useEffect(() => {
