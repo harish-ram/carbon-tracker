@@ -8,6 +8,7 @@ A modern React-based web application to help businesses and individuals measure,
 
 ## 🎯 Features
 
+- **User Authentication**: Secure sign-up/login with Firebase Authentication
 - **Dashboard**: Real-time analytics with KPI cards, trend charts, and scope breakdowns
 - **Data Entry**: Multi-tab form for entering electricity, fuel, water, waste, and travel data
 - **Carbon Calculator**: Convert activities into CO₂ equivalents using automated calculations
@@ -17,6 +18,7 @@ A modern React-based web application to help businesses and individuals measure,
 - **Learn**: Interactive educational content about carbon emissions, credits, and reduction strategies
 - **Settings**: Manage company profile, preferences, and dark/light theme
 - **Edit/Delete Records**: Full CRUD operations for emission records
+- **User-Specific Data**: Each user's data is stored securely and separately
 
 ## 🛠️ Tech Stack
 
@@ -39,6 +41,16 @@ A modern React-based web application to help businesses and individuals measure,
 ### Deployment
 - **GitHub Pages** - Free static site hosting
 - **gh-pages** - Automated deployment tool
+- **Firebase** - Authentication and Firestore database (Backend-as-a-Service)
+
+## 🔐 Authentication & Database
+
+This app uses **Firebase** for:
+- ✅ User authentication (email/password)
+- ✅ Firestore database (user-specific data storage)
+- ✅ Works seamlessly with GitHub Pages (no backend needed!)
+
+**Setup Guide**: See [FIREBASE_SETUP.md](FIREBASE_SETUP.md) for complete instructions.
 
 ## 📦 Installation
 
@@ -55,6 +67,13 @@ cd carbon-tracker
 
 # Install dependencies
 npm install
+
+# Install Firebase
+npm install firebase
+
+# Configure environment variables
+cp .env.example .env
+# Edit .env and add your Firebase config (see FIREBASE_SETUP.md)
 
 # Start development server
 npm run dev

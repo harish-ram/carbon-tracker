@@ -1,12 +1,24 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
+import { logOut } from "@/services/authService";
 import ToggleSwitch from "./ToggleSwitch";
 
 export const Navbar: React.FC = () => {
   const location = useLocation();
-  const { theme, setTheme } = useAppStore();
+  const navigate = useNavigate();
+  const { theme, setTheme, user, setUser } = useAppStore();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      setUser(null);
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   const navLinks = [
     { label: "Dashboard", href: "/" },
@@ -56,6 +68,20 @@ export const Navbar: React.FC = () => {
 
           {/* Theme Toggle & Mobile Menu */}
           <div className="flex items-center gap-4">
+            {user && (
+              <div className="hidden md:flex items-center gap-3">
+                <span className="text-sm text-neutral-600 dark:text-neutral-400">
+                  {user.displayName || user.email}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+            
             <ToggleSwitch
               checked={theme === "dark"}
               onChange={(checked) => setTheme(checked ? "dark" : "light")}

@@ -2,8 +2,13 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { EmissionRecord, CompanyProfile, Recommendation } from "@/types";
 import { generateId } from "@/utils/helpers";
+import { User } from "firebase/auth";
 
 interface AppStore {
+  // Authentication
+  user: User | null;
+  setUser: (user: User | null) => void;
+  
   // Theme
   theme: "light" | "dark";
   setTheme: (theme: "light" | "dark") => void;
@@ -39,6 +44,10 @@ interface AppStore {
 export const useAppStore = create<AppStore>()(
   persist(
     (set: (arg: Partial<AppStore> | ((state: AppStore) => Partial<AppStore>)) => void) => ({
+      // Authentication
+      user: null,
+      setUser: (user: User | null) => set({ user }),
+      
       // Theme
       theme: "light",
       setTheme: (theme: "light" | "dark") => set({ theme }),
@@ -102,6 +111,7 @@ export const useAppStore = create<AppStore>()(
         theme: state.theme,
         company: state.company,
         records: state.records,
+        // Don't persist user - will be managed by Firebase
       }),
     }
   )
