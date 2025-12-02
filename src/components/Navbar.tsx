@@ -32,6 +32,7 @@ export const Navbar: React.FC = () => {
   ];
 
   const isActive = (href: string) => location.pathname === href;
+  const isLoginPage = location.pathname === "/login";
 
   return (
     <nav className="bg-white dark:bg-neutral-900 shadow-soft sticky top-0 z-50">
@@ -47,24 +48,26 @@ export const Navbar: React.FC = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`
-                  px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                  ${
-                    isActive(link.href)
-                      ? "bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300"
-                      : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                  }
-                `}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+          {!isLoginPage && (
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={`
+                    px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200
+                    ${
+                      isActive(link.href)
+                        ? "bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300"
+                        : "text-neutral-600 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                    }
+                  `}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Theme Toggle & Mobile Menu */}
           <div className="flex items-center gap-4">
@@ -101,7 +104,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
+        {mobileMenuOpen && !isLoginPage && (
           <div className="md:hidden pb-4 border-t border-neutral-200 dark:border-neutral-700">
             {navLinks.map((link) => (
               <Link
