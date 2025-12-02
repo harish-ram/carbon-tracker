@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id        String     @id @default(cuid())
+  name      String
+  industry  String
+  region    String
+  employees Int?
+
+  // Settings
+  theme              String?     @default("light")
+  emailAlerts        Boolean     @default(false)
+  currency           String      @default("USD")
+  measurementUnit    String      @default("metric_tons")
+
+  records EmissionRecord[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmissionRecord {
+  id        String   @id @default(cuid())
+  
+  // Emission data
+  month     Int
+  year      Int
+  category  String   // electricity, fuel, water, waste, travel
+  value     Float
+  unit      String
+  co2e      Float?
+  
+  // Metadata
+  notes     String?
+  company   Company? @relation(fields: [companyId], references: [id])
+  companyId String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([companyId])
+  @@index([year, month])
+}
+
+model BenchmarkData {
+  id        String   @id @default(cuid())
+  industry  String
+  region    String
+  year      Int
+  avgEmissions Float
+  unit      String
+  dataSource String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([industry, region, year])
+}
+
+model Recommendation {
+  id        String   @id @default(cuid())
+  title     String
+  description String
+  impact    Int      // 1-5 stars
+  cost      String   // low, medium, high
+  category  String
+  estimatedSavings Int?
+  details   String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
