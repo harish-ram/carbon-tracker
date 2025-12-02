@@ -1,6 +1,10 @@
 # Smart Carbon Footprint & Sustainability Tracker
 
-A modern, full-stack web application to help businesses measure, monitor, and reduce their carbon emissions with advanced analytics, real-time dashboards, and actionable recommendations.
+A modern React-based web application to help businesses and individuals measure, monitor, and reduce their carbon emissions with advanced analytics, real-time dashboards, and actionable recommendations.
+
+## 🌐 Live Demo
+
+**[View Live Application](https://harish-ram.github.io/carbon-tracker/)**
 
 ## 🎯 Features
 
@@ -10,40 +14,44 @@ A modern, full-stack web application to help businesses measure, monitor, and re
 - **Benchmarking**: Compare emissions with industry standards and regional averages
 - **Recommendations**: AI-powered sustainability improvement suggestions
 - **Reports**: Generate and export emissions reports in CSV/PDF formats
-- **Settings**: Manage company profile, preferences, and theme
+- **Learn**: Interactive educational content about carbon emissions, credits, and reduction strategies
+- **Settings**: Manage company profile, preferences, and dark/light theme
+- **Edit/Delete Records**: Full CRUD operations for emission records
 
 ## 🛠️ Tech Stack
 
-### Frontend
-- **React 18** with TypeScript
-- **Vite** for fast development and optimized builds
-- **Tailwind CSS** for responsive, utility-first styling
-- **React Router** for navigation
-- **Recharts** for interactive data visualization
-- **Zustand** for global state management
-- **Axios** for API calls
+### Frontend (React.js)
+- **React 18** with TypeScript - Modern UI library for building interactive interfaces
+- **Vite** - Lightning-fast development server and optimized production builds
+- **Tailwind CSS** - Utility-first CSS framework for responsive design
+- **React Router** - Client-side routing with HashRouter for GitHub Pages compatibility
+- **Recharts** - Composable charting library for interactive data visualization
+- **Zustand** - Lightweight state management with localStorage persistence
+- **Axios** - Promise-based HTTP client for API integration
 
-### Backend (Optional)
-- **Node.js + Express** for REST API
-- **PostgreSQL** for data persistence
-- **Prisma** for ORM
+### Build & Development Tools
+- **Node.js** - JavaScript runtime (development only, not in production)
+- **npm** - Package manager
+- **TypeScript** - Type-safe JavaScript
+- **ESLint** - Code quality and consistency
+- **PostCSS** - CSS processing with Autoprefixer
 
-### External APIs
-- **Carbon Interface API** - CO₂ emission calculations
-- **Electricity Map API** - Grid carbon intensity data
-- **World Bank API** - Industry benchmarks
+### Deployment
+- **GitHub Pages** - Free static site hosting
+- **gh-pages** - Automated deployment tool
 
 ## 📦 Installation
 
 ### Prerequisites
-- Node.js 16+ and npm/yarn
+- Node.js 16+ and npm
 - Git
 
-### Frontend Setup
+### Setup Instructions
 
 ```bash
-# Navigate to project directory
-cd smart-carbon-tracker
+# Clone the repository
+git clone https://github.com/harish-ram/carbon-tracker.git
+cd carbon-tracker
 
 # Install dependencies
 npm install
@@ -53,28 +61,15 @@ npm run dev
 
 # Build for production
 npm run build
+
+# Preview production build
+npm run preview
+
+# Deploy to GitHub Pages
+npm run deploy
 ```
 
 Visit `http://localhost:5173` in your browser.
-
-### Backend Setup (Optional)
-
-```bash
-# Navigate to backend directory
-cd server
-
-# Install dependencies
-npm install
-
-# Create .env file with database URL
-# DATABASE_URL=postgresql://user:password@localhost:5432/carbon_db
-
-# Run migrations
-npx prisma migrate dev
-
-# Start server
-npm run dev
-```
 
 ## 🏗️ Project Structure
 
@@ -95,8 +90,9 @@ smart-carbon-tracker/
 │   │   ├── Benchmarks.tsx
 │   │   ├── Recommendations.tsx
 │   │   ├── Reports.tsx
+│   │   ├── Learn.tsx
 │   │   └── Settings.tsx
-│   ├── services/            # API integration
+│   ├── services/            # API integration (optional)
 │   │   ├── carbonAPI.ts
 │   │   ├── electricityMapAPI.ts
 │   │   └── benchmarkAPI.ts
@@ -226,16 +222,55 @@ Uses Tailwind CSS breakpoints:
 
 ## 🚀 Deployment
 
-### Frontend (Vercel/Netlify)
+### Deployed on GitHub Pages
+
+This application is deployed using GitHub Pages with the following configuration:
+
+1. **Repository**: https://github.com/harish-ram/carbon-tracker
+2. **Live URL**: https://harish-ram.github.io/carbon-tracker/
+3. **Deployment**: Automated via `gh-pages` package
+
+### Deploy Your Own Instance
+
 ```bash
-npm run build
-# Deploy the 'dist' folder
+# Build and deploy to GitHub Pages
+npm run deploy
 ```
 
-### Backend (Heroku/Railway)
-```bash
-git push heroku main
-```
+### Configuration for GitHub Pages
+
+The app uses:
+- **HashRouter** instead of BrowserRouter for proper routing on GitHub Pages
+- **Base path** configured in `vite.config.ts` as `/carbon-tracker/`
+- **gh-pages branch** for automated deployment
+
+### How It Works
+
+1. `npm run deploy` triggers `predeploy` script which runs `npm run build`
+2. Vite builds the React app into static files in the `dist/` directory
+3. `gh-pages` package pushes the `dist/` folder to the `gh-pages` branch
+4. GitHub Pages serves the static files from the `gh-pages` branch
+5. No Node.js runtime required in production - pure client-side React app
+
+## 🎨 Design System
+
+### Color Palette
+- **Primary Green**: #00A86B
+- **Dark Green**: #006644
+- **Charcoal**: #1F2933
+- **Accent Blue**: #0095FF
+- **Neutral**: Grays from #F5F7FA to #1E1E1E
+
+### Typography
+- **Headings**: Montserrat, bold
+- **Body**: Inter/Roboto, regular
+
+### Animations
+- Smooth transitions (0.2-0.35s)
+- Fade-in on scroll
+- Card hover effects (scale 1.02)
+- Chart reveal animations
+- Rotating globe animation on Learn page
 
 ## 📈 Future Enhancements
 
@@ -245,7 +280,23 @@ git push heroku main
 - [ ] Advanced predictive analytics
 - [ ] Carbon offset marketplace integration
 - [ ] Team collaboration features
+- [ ] Backend API integration for multi-user support
+- [ ] Database persistence (PostgreSQL/MongoDB)
 - [ ] API webhooks for external integrations
+
+## 🎓 What You'll Learn
+
+This project demonstrates:
+- Modern React development with TypeScript
+- State management with Zustand
+- Responsive design with Tailwind CSS
+- Data visualization with Recharts
+- Client-side routing with React Router
+- Local storage for data persistence
+- Building and deploying to GitHub Pages
+- Dark mode implementation
+- Form handling and validation
+- Component-based architecture
 
 ## 🤝 Contributing
 
