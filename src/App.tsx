@@ -2,6 +2,7 @@ import React from "react";
 import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
 import { subscribeToAuthChanges } from "@/services/authService";
+import { useOrientation } from "@/hooks/useOrientation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -18,6 +19,7 @@ import "@/styles/globals.css";
 
 export const App: React.FC = () => {
   const { theme, setUser, loadRecords } = useAppStore();
+  const orientation = useOrientation();
 
   // Subscribe to authentication state changes
   React.useEffect(() => {
@@ -32,6 +34,23 @@ export const App: React.FC = () => {
     return () => unsubscribe();
   }, [setUser, loadRecords]);
 
+  // Handle orientation changes for mobile optimization
+  React.useEffect(() => {
+    // Add orientation class to body for CSS targeting
+    document.body.classList.toggle('orientation-portrait', orientation.isPortrait);
+    document.body.classList.toggle('orientation-landscape', orientation.isLandscape);
+
+    // Force viewport recalculation on orientation change
+    const viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      const content = viewport.getAttribute('content');
+      viewport.setAttribute('content', content + ', user-scalable=no');
+      setTimeout(() => {
+        viewport.setAttribute('content', content + ', user-scalable=yes');
+      }, 100);
+    }
+  }, [orientation.isPortrait, orientation.isLandscape]);
+
   // Handle theme changes
   React.useEffect(() => {
     if (theme === "dark") {
@@ -42,7 +61,7 @@ export const App: React.FC = () => {
   }, [theme]);
 
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <div className="flex flex-col min-h-screen bg-neutral-50 dark:bg-neutral-900">
         <Navbar />
         <main className="flex-1 max-w-7xl mx-auto w-full py-8 px-4 sm:px-6 lg:px-8">

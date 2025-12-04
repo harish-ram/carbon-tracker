@@ -45,20 +45,20 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-4xl font-heading font-bold text-neutral-900 dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-heading font-bold text-neutral-900 dark:text-white">
             Dashboard
           </h1>
           <p className="text-neutral-600 dark:text-neutral-400 mt-2">
             Monitor your organization's carbon emissions
           </p>
         </div>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(Number(e.target.value))}
-            className="input-base px-6 py-3 text-lg rounded-xl border-2 border-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-200 bg-white w-40 text-left truncate"
+            className="input-base px-4 py-2.5 text-base rounded-lg min-h-[44px] flex-1 sm:flex-none sm:w-40"
           >
             {Array.from({ length: 12 }, (_, i) => i + 1).map((month) => (
               <option key={month} value={month}>
@@ -69,7 +69,7 @@ export const Dashboard: React.FC = () => {
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
-            className="input-base py-2"
+            className="input-base px-4 py-2.5 text-base rounded-lg min-h-[44px] flex-1 sm:flex-none sm:w-32"
           >
             {[2023, 2024, 2025].map((year) => (
               <option key={year} value={year}>
@@ -81,7 +81,7 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
           title="Total Emissions"
           value={totalEmissions}
@@ -117,10 +117,10 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Emissions Trend Chart */}
-        <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft">
-          <h2 className="text-lg font-heading font-bold text-neutral-900 dark:text-white mb-4">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 sm:p-6 shadow-soft">
+          <h2 className="text-base sm:text-lg font-heading font-bold text-neutral-900 dark:text-white mb-4">
             Emissions Trend (Last 12 Months)
           </h2>
           {monthlyTrend.length > 0 ? (
@@ -165,8 +165,8 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Emissions by Category Chart */}
-        <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft">
-          <h2 className="text-lg font-heading font-bold text-neutral-900 dark:text-white mb-4">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 sm:p-6 shadow-soft">
+          <h2 className="text-base sm:text-lg font-heading font-bold text-neutral-900 dark:text-white mb-4">
             Emissions by Category
           </h2>
           {categoryChartData.length > 0 ? (
@@ -208,11 +208,11 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* Quick Stats */}
-      <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft">
-        <h2 className="text-lg font-heading font-bold text-neutral-900 dark:text-white mb-6">
+      <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 sm:p-6 shadow-soft">
+        <h2 className="text-base sm:text-lg font-heading font-bold text-neutral-900 dark:text-white mb-4 sm:mb-6">
           Statistics
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="text-center">
             <p className="text-sm text-neutral-600 dark:text-neutral-400 uppercase tracking-wide">
               Average

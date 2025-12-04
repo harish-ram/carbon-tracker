@@ -5,6 +5,7 @@
  */
 
 import { ApiResponse, BenchmarkData } from "@/types";
+import { retryWithBackoff, getMobileErrorMessage } from "@/utils/network";
 
 interface WorldBankResponse {
   page: number;
@@ -47,19 +48,25 @@ class WorldBankAPI {
     startYear: number = 2020,
     endYear: number = 2023
   ): Promise<WorldBankResponse | null> {
-    try {
+    return retryWithBackoff(async () => {
       const countryString = countries.join(';');
       const url = `${this.baseURL}/country/${countryString}/indicator/${indicator}?date=${startYear}:${endYear}&format=json&per_page=1000`;
-      
-      const response = await fetch(url);
-      
+
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        // Add timeout for mobile networks
+        signal: AbortSignal.timeout(10000), // 10 second timeout
+      });
+
       if (!response.ok) {
-        console.error('World Bank API error:', response.statusText);
-        return null;
+        throw new Error(`World Bank API error: ${response.status} ${response.statusText}`);
       }
-      
+
       const data = await response.json();
-      
+
       // World Bank API returns array [metadata, data]
       if (Array.isArray(data) && data.length > 1) {
         return {
@@ -70,12 +77,9 @@ class WorldBankAPI {
           data: data[1],
         };
       }
-      
+
       return null;
-    } catch (error) {
-      console.error('Error fetching World Bank data:', error);
-      return null;
-    }
+    }, 2, 2000); // 2 retries, 2 second base delay
   }
 
   /**
@@ -94,7 +98,7 @@ class WorldBankAPI {
         // Return empty but successful response instead of throwing
         return {
           success: false,
-          error: 'No data available from World Bank API',
+          error: getMobileErrorMessage(new Error('No data available from World Bank API')),
           data: [],
         };
       }
@@ -133,7 +137,7 @@ class WorldBankAPI {
       // Don't log error loudly - this is expected when API is unavailable
       return {
         success: false,
-        error: error.message || 'Failed to fetch World Bank CO₂ data',
+        error: getMobileErrorMessage(error),
         data: [],
       };
     }

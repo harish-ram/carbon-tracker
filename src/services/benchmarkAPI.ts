@@ -1,5 +1,6 @@
 import { ApiResponse, BenchmarkData } from "@/types";
 import worldBankAPI from "./worldBankAPI";
+import { getMobileErrorMessage } from "@/utils/network";
 
 /**
  * Benchmark API - Integrates with World Bank Climate Data API
@@ -30,7 +31,7 @@ class BenchmarkAPI {
       console.error('Error fetching industry benchmark:', error);
       return {
         success: false,
-        error: error.message || "Failed to fetch benchmark data",
+        error: getMobileErrorMessage(error),
       };
     }
   }

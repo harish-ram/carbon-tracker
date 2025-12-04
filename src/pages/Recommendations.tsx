@@ -51,17 +51,169 @@ const mockRecommendations = [
     estimatedSavings: 8,
     details: "Proper waste management and recycling can reduce landfill emissions by 60%.",
   },
+  {
+    id: "6",
+    title: "Smart Building Automation",
+    description: "Install sensors and automation for HVAC and lighting systems",
+    impact: 4,
+    cost: "medium",
+    category: "Efficiency",
+    estimatedSavings: 25,
+    details: "Automated systems can reduce energy consumption by 20-30% through intelligent scheduling and occupancy detection.",
+  },
+  {
+    id: "7",
+    title: "Green Procurement Policy",
+    description: "Prioritize suppliers with sustainable practices and low-carbon products",
+    impact: 3,
+    cost: "low",
+    category: "Supply Chain",
+    estimatedSavings: 12,
+    details: "Choosing suppliers with verified carbon reduction programs can lower your scope 3 emissions significantly.",
+  },
+  {
+    id: "8",
+    title: "Employee Training Program",
+    description: "Conduct regular sustainability awareness and energy conservation training",
+    impact: 2,
+    cost: "low",
+    category: "Behavioral",
+    estimatedSavings: 8,
+    details: "Well-informed employees can reduce energy waste by 10-15% through conscious behavioral changes.",
+  },
+  {
+    id: "9",
+    title: "Water Conservation Measures",
+    description: "Install low-flow fixtures and implement water recycling systems",
+    impact: 3,
+    cost: "medium",
+    category: "Water",
+    estimatedSavings: 18,
+    details: "Reducing water usage by 30% also reduces the energy required for water treatment and heating.",
+  },
+  {
+    id: "10",
+    title: "Electric Vehicle Fleet",
+    description: "Transition company vehicles to electric or hybrid models",
+    impact: 4,
+    cost: "high",
+    category: "Travel",
+    estimatedSavings: 35,
+    details: "Electric vehicles produce zero tailpipe emissions and can reduce transportation costs over time.",
+  },
+  {
+    id: "11",
+    title: "Carbon Offsetting Program",
+    description: "Invest in verified carbon offset projects (forests, renewable energy)",
+    impact: 3,
+    cost: "medium",
+    category: "Offsetting",
+    estimatedSavings: 100,
+    details: "Carbon offsets can neutralize remaining emissions while supporting global climate solutions.",
+  },
+  {
+    id: "12",
+    title: "Remote Work Policy",
+    description: "Implement flexible remote work options to reduce commuting",
+    impact: 3,
+    cost: "low",
+    category: "Travel",
+    estimatedSavings: 22,
+    details: "Allowing 2-3 remote work days per week can reduce commuting emissions by 40-60%.",
+  },
+  {
+    id: "13",
+    title: "Energy-Efficient Appliances",
+    description: "Replace old equipment with ENERGY STAR certified appliances",
+    impact: 3,
+    cost: "medium",
+    category: "Efficiency",
+    estimatedSavings: 15,
+    details: "ENERGY STAR appliances use 10-50% less energy than standard models.",
+  },
+  {
+    id: "14",
+    title: "Green Building Certification",
+    description: "Pursue LEED or BREEAM certification for your facilities",
+    impact: 4,
+    cost: "high",
+    category: "Building",
+    estimatedSavings: 30,
+    details: "Certified green buildings reduce energy use by 25-30% and improve indoor environmental quality.",
+  },
+  {
+    id: "15",
+    title: "Sustainable Packaging",
+    description: "Switch to recyclable, biodegradable, or minimal packaging materials",
+    impact: 2,
+    cost: "medium",
+    category: "Waste",
+    estimatedSavings: 12,
+    details: "Reducing packaging weight by 20% and using sustainable materials can cut waste emissions significantly.",
+  },
+  {
+    id: "16",
+    title: "Demand Response Program",
+    description: "Participate in utility demand response programs for peak shaving",
+    impact: 3,
+    cost: "low",
+    category: "Energy",
+    estimatedSavings: 8,
+    details: "Reducing peak demand by 15% can avoid using high-emission peaker plants.",
+  },
+  {
+    id: "17",
+    title: "Composting Program",
+    description: "Implement food waste composting to reduce methane emissions",
+    impact: 3,
+    cost: "low",
+    category: "Waste",
+    estimatedSavings: 15,
+    details: "Composting food waste prevents methane release from landfills and creates nutrient-rich soil.",
+  },
+  {
+    id: "18",
+    title: "Virtual Meetings",
+    description: "Use video conferencing instead of business travel when possible",
+    impact: 3,
+    cost: "low",
+    category: "Travel",
+    estimatedSavings: 28,
+    details: "Replacing one business trip with virtual meetings can save 0.5-1 ton of CO2 per trip.",
+  },
+  {
+    id: "19",
+    title: "Heat Recovery Systems",
+    description: "Install waste heat recovery from HVAC and industrial processes",
+    impact: 4,
+    cost: "medium",
+    category: "Efficiency",
+    estimatedSavings: 20,
+    details: "Capturing and reusing waste heat can improve overall energy efficiency by 15-25%.",
+  },
+  {
+    id: "20",
+    title: "Sustainable Supply Chain Audit",
+    description: "Conduct carbon footprint assessment of key suppliers",
+    impact: 3,
+    cost: "medium",
+    category: "Supply Chain",
+    estimatedSavings: 18,
+    details: "Understanding supplier emissions helps identify opportunities for collaborative carbon reduction.",
+  },
 ];
 
 export const Recommendations: React.FC = () => {
   const [expanded, setExpanded] = React.useState<string | null>(null);
   const [filterImpact, setFilterImpact] = React.useState("all");
   const [filterCost, setFilterCost] = React.useState("all");
+  const [filterCategory, setFilterCategory] = React.useState("all");
 
   const filtered = mockRecommendations.filter((r) => {
     const impactMatch = filterImpact === "all" || r.impact >= Number(filterImpact);
     const costMatch = filterCost === "all" || r.cost === filterCost;
-    return impactMatch && costMatch;
+    const categoryMatch = filterCategory === "all" || r.category === filterCategory;
+    return impactMatch && costMatch && categoryMatch;
   });
 
   const getRatingDisplay = (rating: number) => {
@@ -102,6 +254,7 @@ export const Recommendations: React.FC = () => {
             className="input-base text-sm"
           >
             <option value="all">All</option>
+            <option value="2">2+</option>
             <option value="3">3+</option>
             <option value="4">4+</option>
             <option value="5">5</option>
@@ -118,6 +271,26 @@ export const Recommendations: React.FC = () => {
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
+          </select>
+        </div>
+        <div>
+          <label className="text-sm font-medium block mb-2">Category</label>
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="input-base text-sm w-full min-w-[140px] sm:min-w-[180px] px-4 py-2.5 rounded-lg border-2"
+          >
+            <option value="all">All Categories</option>
+            <option value="Energy">Energy</option>
+            <option value="Efficiency">Efficiency</option>
+            <option value="Renewable">Renewable</option>
+            <option value="Travel">Travel</option>
+            <option value="Waste">Waste</option>
+            <option value="Supply Chain">Supply Chain</option>
+            <option value="Behavioral">Behavioral</option>
+            <option value="Water">Water</option>
+            <option value="Offsetting">Offsetting</option>
+            <option value="Building">Building</option>
           </select>
         </div>
       </div>

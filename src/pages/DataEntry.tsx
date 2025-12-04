@@ -129,23 +129,23 @@ export const DataEntry: React.FC = () => {
         </div>
       )}
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Form Section */}
-        <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft">
-          <h2 className="text-xl font-heading font-bold mb-6 text-neutral-900 dark:text-white">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 sm:p-6 shadow-soft">
+          <h2 className="text-lg sm:text-xl font-heading font-bold mb-4 sm:mb-6 text-neutral-900 dark:text-white">
             Add New Record
           </h2>
 
           {/* Tabs */}
-          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
             {(["electricity", "fuel", "water", "waste", "travel"] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-2 sm:px-4 rounded-lg font-medium whitespace-nowrap transition-all text-sm sm:text-base min-h-[44px] ${
                   activeTab === tab
                     ? "bg-primary-500 text-white"
-                    : "bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300"
+                    : "bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-300 dark:hover:bg-neutral-600"
                 }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -153,8 +153,8 @@ export const DataEntry: React.FC = () => {
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormInput
                 label="Month"
                 type="number"
@@ -211,8 +211,8 @@ export const DataEntry: React.FC = () => {
         </div>
 
         {/* Preview Section */}
-        <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 shadow-soft">
-          <h2 className="text-xl font-heading font-bold mb-6 text-neutral-900 dark:text-white">
+        <div className="bg-white dark:bg-neutral-800 rounded-xl p-4 sm:p-6 shadow-soft">
+          <h2 className="text-lg sm:text-xl font-heading font-bold mb-4 sm:mb-6 text-neutral-900 dark:text-white">
             Recent Records
           </h2>
 
@@ -223,9 +223,9 @@ export const DataEntry: React.FC = () => {
           ) : (
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {records.slice(-10).reverse().map((record) => (
-                <div key={record.id} className="p-3 bg-neutral-100 dark:bg-neutral-700 rounded-lg">
-                  <div className="flex justify-between items-start">
-                    <div>
+                <div key={record.id} className="p-3 sm:p-4 bg-neutral-100 dark:bg-neutral-700 rounded-lg">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                    <div className="flex-1">
                       <p className="font-medium text-neutral-900 dark:text-white">
                         {record.category.charAt(0).toUpperCase() + record.category.slice(1)}
                       </p>
@@ -233,22 +233,22 @@ export const DataEntry: React.FC = () => {
                         {record.month}/{record.year}
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="flex flex-col items-end gap-1">
                       <p className="font-bold text-primary-600 dark:text-primary-400">
                         {formatNumber(record.value)} {record.unit}
                       </p>
                       <p className="text-sm text-neutral-600 dark:text-neutral-400">
                         {formatNumber(record.co2e || 0)} kg CO₂e
                       </p>
-                      <div className="flex gap-2 mt-2 justify-end">
+                      <div className="flex gap-2 mt-2 flex-wrap justify-end">
                         <button
-                          className="px-2 py-1 text-xs rounded bg-primary-500 text-white hover:bg-primary-600"
+                          className="px-3 py-2 text-sm rounded bg-primary-500 text-white hover:bg-primary-600 min-h-[36px] font-medium"
                           onClick={() => handleEdit(record)}
                         >
                           Edit
                         </button>
                         <button
-                          className="px-2 py-1 text-xs rounded bg-error text-white hover:bg-red-600"
+                          className="px-3 py-2 text-sm rounded bg-error text-white hover:bg-red-600 min-h-[36px] font-medium"
                           onClick={() => handleDelete(record.id)}
                         >
                           Delete

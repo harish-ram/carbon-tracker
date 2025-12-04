@@ -2,10 +2,13 @@ import React from "react";
 import benchmarkAPI from "@/services/benchmarkAPI";
 import { formatNumber } from "@/utils/helpers";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import Pagination from "@/components/Pagination";
 
 export const Benchmarks: React.FC = () => {
   const [benchmarks, setBenchmarks] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 5; // Mobile-friendly page size
 
   React.useEffect(() => {
     const fetchBenchmarks = async () => {
@@ -17,6 +20,16 @@ export const Benchmarks: React.FC = () => {
     };
     fetchBenchmarks();
   }, []);
+
+  const totalPages = Math.ceil(benchmarks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedBenchmarks = benchmarks.slice(startIndex, startIndex + itemsPerPage);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of table on mobile
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const chartData = benchmarks.slice(0, 4).map((b) => ({
     name: b.industry,
@@ -68,7 +81,7 @@ export const Benchmarks: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {benchmarks.map((b, idx) => (
+                {paginatedBenchmarks.map((b, idx) => (
                   <tr key={idx} className="border-b border-neutral-100 dark:border-neutral-700">
                     <td className="py-3 px-4">{b.industry}</td>
                     <td className="py-3 px-4">{b.region}</td>
@@ -79,6 +92,11 @@ export const Benchmarks: React.FC = () => {
                 ))}
               </tbody>
             </table>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
           </div>
         </>
       )}
