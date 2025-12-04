@@ -112,6 +112,7 @@ export const Login: React.FC = () => {
                 onChange={handleChange}
                 className="input-base"
                 placeholder="you@example.com"
+                autoComplete="email"
               />
             </div>
 
@@ -128,6 +129,7 @@ export const Login: React.FC = () => {
                 onChange={handleChange}
                 className="input-base"
                 placeholder="••••••••"
+                autoComplete={isSignUp ? "new-password" : "current-password"}
               />
             </div>
 
@@ -145,6 +147,7 @@ export const Login: React.FC = () => {
                   onChange={handleChange}
                   className="input-base"
                   placeholder="••••••••"
+                  autoComplete="new-password"
                 />
               </div>
             )}
